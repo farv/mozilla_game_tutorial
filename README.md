@@ -7,3 +7,9 @@ PLUS
 ----
 
 Some exercises made by me to develop a game.
+
+PURPOSE
+-------
+
+I started this project to learn about Javascript basics. Then I have gone on
+developing a complete (and more complicated) game by myself.
