@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Gamedev Canvas Workshop</title>
+    <style>
+    	* { padding: 0; margin: 0; }
+    	canvas { background: #eee; display: block; margin: 0 auto; }
+    </style>
+</head>
+<body>
+
+<canvas id="myCanvas" width="480" height="320"></canvas>
+
+<script>
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+var ballRadius = 10;
+var x = canvas.width/2;
+var y = canvas.height-30;
+var dx = 2;
+var dy = -2;
+var da = 2;
+var db = -2;
+var a = canvas.width/2;
+var b = 30;
+
+function drawBall(x, y, color) {
+    ctx.beginPath();
+    ctx.arc(x, y, ballRadius, 0, Math.PI*2);
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.closePath();
+}
+
+function ballColision(x,y,a,b,radiusX,radiusA){
+    var xPos = (x-a)^2;
+    var yPos = (y-b)^2;
+    var minDist = (radiusA+radiusX)^2;
+    console.log("X,y="+xPos+" A,b="+yPos+" MinDist="+minDist)
+    return xPos+yPos<=minDist;
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawBall(x, y, "blue");
+    drawBall(a, b, "green");
+    
+    x += dx;
+    y += dy;
+    a += da;
+    b += db;
+    
+    if(x > canvas.width-ballRadius || x < ballRadius) {
+        dx = -dx;
+    }
+    if(y > canvas.height-ballRadius || y < ballRadius) {
+        dy = -dy;
+    }
+    if(a > canvas.width-ballRadius || a < ballRadius) {
+        da = -da;
+    }
+    if(b > canvas.height-ballRadius || b < ballRadius) {
+        db = -db;
+    }
+    if(ballColision(x,y,a,b,ballRadius,ballRadius)){
+        db=-db;
+        dy=-dy;
+    }
+    
+}
+
+setInterval(draw, 10);
+</script>
+
+</body>
+</html>

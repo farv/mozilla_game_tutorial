@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Gamedev Canvas Workshop</title>
+    <style>
+    	* { padding: 0; margin: 0; }
+    	canvas { background: #eee; display: block; margin: 0 auto; }
+    </style>
+</head>
+<body>
+
+<canvas id="myCanvas" width="480" height="320"></canvas>
+
+<script>
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+var ballRadius = 10;
+var redBall = {x:canvas.width/2,
+    y:canvas.height-30,
+    dx:1,
+    dy:1,
+    color:"red",
+    radius:ballRadius
+}
+var yellowBall = {x:canvas.width/2,
+    y:30,
+    dx:1,
+    dy:1,
+    color:"yellow",
+    radius:ballRadius
+}
+var background = {x:240,
+    y:160,
+    height:160,
+    width:160,
+    color:"green"
+}
+
+function drawBackground () {
+    ctx.beginPath();
+    ctx.ellipse(background.x, background.y, 
+        background.height, background.width,
+        Math.PI/2, 0, Math.PI*2);
+    ctx.fillStyle = "green";
+    ctx.fill();
+    ctx.closePath();
+}
+
+function distance(ball1, ball2){
+    var x = Math.pow(ball1.x-ball2.x,2);
+    var y = Math.pow(ball1.y-ball2.y,2);
+    return Math.sqrt(x+y);
+}
+
+function drawBall(ball) {
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
+    ctx.fillStyle = ball.color;
+    ctx.fill();
+    ctx.closePath();
+}
+
+function ballCollision(ballX,ballA){
+    var dist = distance(ballX,ballA)
+    var minDist = ballA.radius+ballX.radius;
+    return dist<=minDist;
+}
+
+function outOfCircle(ball){
+    var dist = distance(ball, background);
+    return dist>background.width-ball.radius;
+}
+
+function calculateAngle(ballY, ballB){
+    ballY.dy=-ballY.dy;
+    ballB.dy=-ballB.dy;
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawBackground();
+    drawBall(redBall);
+    drawBall(yellowBall);
+    
+    redBall.x += redBall.dx;
+    redBall.y += redBall.dy;
+    yellowBall.x += yellowBall.dx;
+    yellowBall.y += yellowBall.dy;
+    
+    if(redBall.x > canvas.width-ballRadius || redBall.x < ballRadius) {
+        redBall.dx = -redBall.dx;
+    }
+    if(redBall.y > canvas.height-ballRadius || redBall.y < ballRadius) {
+        redBall.dy = -redBall.dy;
+    }
+    if(yellowBall.x > canvas.width-ballRadius || yellowBall.x < ballRadius) {
+        yellowBall.dx = -yellowBall.dx;
+    }
+    if(yellowBall.y > canvas.height-ballRadius || yellowBall.y < ballRadius) {
+        yellowBall.dy = -yellowBall.dy;
+    }
+    if(outOfCircle(yellowBall)){
+        yellowBall.color="blue";
+    }else{
+        yellowBall.color="yellow";
+    }
+    if(ballCollision(redBall,yellowBall)){
+        calculateAngle(redBall, yellowBall);
+    }
+    requestAnimationFrame(draw);
+    
+}
+
+draw();
+</script>
+
+</body>
+</html>

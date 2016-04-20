@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Gamedev Canvas Workshop</title>
+    <style>
+    	* { padding: 0; margin: 0; }
+    	canvas { background: #eee; display: block; margin: 0 auto; }
+    </style>
+</head>
+<body>
+
+<canvas id="myCanvas" width="480" height="320"></canvas>
+
+<script>
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+var ballRadius = 10;
+var redBall = {x:canvas.width/2,
+    y:canvas.height-30,
+    dx:1,
+    dy:1,
+    color:"red",
+    radius:ballRadius
+}
+var yellowBall = {x:canvas.width/2,
+    y:30,
+    dx:1,
+    dy:1,
+    color:"yellow",
+    radius:ballRadius
+}
+
+function drawBackground () {
+    ctx.beginPath();
+    ctx.ellipse(240, 160, 160, 160, Math.PI/2, 0, Math.PI*2);
+    ctx.fillStyle = "green";
+    ctx.fill();
+    ctx.closePath();
+}
+
+function drawBall(ball) {
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
+    ctx.fillStyle = ball.color;
+    ctx.fill();
+    ctx.closePath();
+}
+
+function ballCollision(ballX,ballA){
+    var xPos = (ballX.x-ballA.x)^2;
+    var yPos = (ballX.y-ballA.y)^2;
+    var minDist = (ballA.radius+ballX.radius)^2;
+    console.log("X,y="+xPos+" A,b="+yPos+" MinDist="+minDist)
+    return xPos+yPos<=minDist;
+}
+
+function insideCollision(ball){
+    return false;
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawBackground();
+    drawBall(redBall);
+    drawBall(yellowBall);
+    
+    redBall.x += redBall.dx;
+    redBall.y += redBall.dy;
+    yellowBall.x += yellowBall.dx;
+    yellowBall.y += yellowBall.dy;
+    
+    if(redBall.x > canvas.width-ballRadius || redBall.x < ballRadius) {
+        redBall.dx = -redBall.dx;
+    }
+    if(redBall.y > canvas.height-ballRadius || redBall.y < ballRadius) {
+        redBall.dy = -redBall.dy;
+    }
+    if(yellowBall.x > canvas.width-ballRadius || yellowBall.x < ballRadius) {
+        yellowBall.dx = -yellowBall.dx;
+    }
+    if(yellowBall.y > canvas.height-ballRadius || yellowBall.y < ballRadius) {
+        yellowBall.dy = -yellowBall.dy;
+    }
+    if(insideCollision()){
+        redBall.dx = -redBall.dx;
+    }
+    if(ballCollision(redBall,yellowBall)){
+        redBall.dy=-redBall.dy;
+        yellowBall.dy=-yellowBall.dy;
+    }
+    
+}
+
+setInterval(draw, 10);
+</script>
+
+</body>
+</html>
